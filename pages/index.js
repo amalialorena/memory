@@ -1,10 +1,8 @@
+import { useEffect, useState } from 'react';
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
-
-  const cards = [
+const startingCards = [
   { name:"bunny",
     open:false,
   },
@@ -24,6 +22,51 @@ export default function Home() {
     open:false,
   },
 ];
+
+
+// const setStuff = (newStuff) => {
+//   stuff = newStuff;
+// }
+
+// const useState2 = (defaultValue) => {
+//   const stuff = defaultValue;
+
+//   return [
+//     stuff,
+//     setStuff
+//   ]
+// }
+
+export default function Home() {
+const [cards, setCards] = useState(startingCards);
+
+
+function handleCounter () {
+  setCounter(counter + 1);
+}
+
+function flipCard(index) { 
+  setCards(prev => {
+    const newCards = [...prev];
+    newCards[index].open = true;
+    return newCards;
+  })
+};
+
+useEffect(() => {
+  const selectedCards = cards.filter(card => card.open === true).length;
+  
+  if (selectedCards === 2) {
+    setTimeout(() => {
+      setCards(prev => {
+        const newCards = [...prev];
+        newCards.map(card => card.open = false);
+        return newCards;
+      })
+    }, 1000);
+  }
+}, [cards])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -40,7 +83,7 @@ export default function Home() {
         </p>
         <div className={styles.grid}>
         {cards.map((card, index) => (
-            <div className={styles.card} key={index}>{card.open? card.name : index+1}</div>
+            <div className={styles.card} key={index} onClick={()=>{flipCard(index)}} >{card.open ? card.name : index+1}</div>
         ))}
         </div>
 
