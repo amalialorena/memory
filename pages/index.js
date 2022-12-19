@@ -40,11 +40,6 @@ const startingCards = [
 export default function Home() {
 const [cards, setCards] = useState(startingCards);
 
-
-function handleCounter () {
-  setCounter(counter + 1);
-}
-
 function flipCard(index) { 
   setCards(prev => {
     const newCards = [...prev];
@@ -54,9 +49,12 @@ function flipCard(index) {
 };
 
 useEffect(() => {
-  const selectedCards = cards.filter(card => card.open === true).length;
+  const selectedCards = cards.filter(card => card.open === true);
+  if (selectedCards[0].name == selectedCards[1].name) {
+    console.log("aaaa")
+  }
   
-  if (selectedCards === 2) {
+  if (selectedCards.length === 2) {
     setTimeout(() => {
       setCards(prev => {
         const newCards = [...prev];
@@ -65,7 +63,10 @@ useEffect(() => {
       })
     }, 1000);
   }
+
+
 }, [cards])
+
 
   return (
     <div className={styles.container}>
