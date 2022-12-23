@@ -81,8 +81,8 @@ const startingCards = [
 ];
 
 let points = 0;
-let selectedCards = 0
-
+let openCards = [];
+let selectedCards = []
 
 // const setStuff = (newStuff) => {
 //   stuff = newStuff;
@@ -103,15 +103,39 @@ let selectedCards = 0
 
 export default function Home() {
   const [cards, setCards] = useState(startingCards);
+  // const [selectedCards, setSelectedCards] = useState([]);
 
   function flipCard(index) {
+    selectedCards.push(cards[index])
     setCards(prev => {
       const newCards = [...prev];
       newCards[index].open = true;
       return newCards;
     })
+    console.log("selected in flip", {selectedCards: selectedCards})
+    if (selectedCards.length === 2 && selectedCards[0].name !== selectedCards[1].name) {
+      console.log("selected in first if", {selectedCards})
+      selectedCards= []
+    }
+    if(selectedCards.length === 2 && selectedCards[0].name === selectedCards[1].name) {
+      console.log("selected in second if", {selectedCards})
+      points ++
+        setCards(prev => {
+          const newCards = [...prev];
+          newCards.map(card => {
+            console.log("selected in map", {selectedCards, card})
+            if(card.name === selectedCards[0].name) {
+              return card.disabled = true
+            }
+             return card
+          });
+          return newCards;
+        })
 
-
+      setTimeout(() => {
+        selectedCards = [];
+      }, 100)
+    }
   }
 
   // useEffect(() => {
@@ -119,23 +143,11 @@ export default function Home() {
   // }, [cards]);
 
   useEffect(() => {
-     selectedCards = cards.filter(card => card.open === true);
+    openCards = cards.filter(card => card.open === true);
 
-    if(selectedCards.length === 2 && selectedCards[0].name === selectedCards[1].name) {
-      points ++
-      setCards(prev => {
-        const newCards = [...prev];
-        newCards.map(card => {
-          if(card.name === selectedCards[0].name) {
-            return card.disabled = true
-          }
-           return card
-        });
-        return newCards;
-      })
-    }
+    if (openCards.length === 2) {
+      // console.log("selected",openCards )
 
-    if (selectedCards.length === 2) {
       setTimeout(() => {
         setCards(prev => {
           const newCards = [...prev];
